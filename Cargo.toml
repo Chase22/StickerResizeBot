@@ -1,0 +1,9 @@
+[package]
+name = "sticker_resize_bot"
+version = "0.1.0"
+authors = ["Chase <chase@mailbox.org>"]
+
+[dependencies]
+telegram-bot = "0.6"
+tokio-core = "0.1.7"
+futures = "0.1"
