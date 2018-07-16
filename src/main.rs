@@ -7,10 +7,13 @@ use futures::Future;
 use tokio_core::reactor::Core;
 use telegram_bot::*;
 
+use std::fs::File;
+use std::io::prelude::*;
+
 fn main() {
     let mut core = Core::new().unwrap();
 
-    let token = "340581395:AAFtbKSPPt25sCRiPWg7fP66o_zE1U9U-aA";
+    let token = load_token();
     let api = Api::configure(token).build(core.handle()).unwrap();
 
     // Fetch new updates via long poll method
@@ -50,4 +53,13 @@ fn handle_file(doc: &Document, chat_id: &ChatId, api: &Api) {
         //Err(e) => { api.spawn(SendMessage::new(chat_id, "There was an error downloading the file")) },
     };
 
+}
+
+fn load_token() -> std::string::String {
+    let mut f = File::open("token").expect("Tokenfile not found");
+    let mut contents = String::new();
+    f.read_to_string(&mut contents)
+        .expect("something went wrong reading the file");
+
+    contents
 }
