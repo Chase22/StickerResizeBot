@@ -45,10 +45,24 @@ fn handle_file(doc: &Document, chat_id: &ChatId, api: &Api) {
     if doc.file_size.unwrap() > 20000000 {
         api.spawn(SendMessage::new(chat_id, "The file is to big too download. Please send at maximum 20MB files"));
     } else {
-        //let file: File;
 
         let future = api.send(GetFile::new(doc));
-        future.and_then(|file| Ok(println!("{:?}", file)));
+        //future.and_then(|file| Ok(println!("{:?}", file)));
+
+        let response = future.wait();
+
+        let is_err = match response {
+            Ok(_) => false,
+            Err(_) => true,
+        };
+
+        if is_err {
+            api.spawn(SendMessage::new(chat_id, "There was an error downloading the file"));
+        } else {
+            let file = response.unwrap();
+            println!("{:?}", file);
+        };
+
 
         //Err(e) => { api.spawn(SendMessage::new(chat_id, "There was an error downloading the file")) },
     };
